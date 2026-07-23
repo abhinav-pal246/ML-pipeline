@@ -22,11 +22,11 @@ from sklearn.metrics import confusion_matrix, classification_report, roc_curve, 
 
 st.set_page_config(
     page_title="Bank Telemarketing — ML Pipeline",
-    page_icon="",
+    page_icon="🏦",
     layout="wide",
 )
 
-st.title(" Bank Telemarketing — Subscription Predictor")
+st.title("🏦 Bank Telemarketing — Subscription Predictor")
 st.caption("Automated ML pipeline: feature selection → model comparison → Optuna tuning → production artifact")
 st.divider()
 
@@ -58,11 +58,11 @@ def preprocess(df):
     for col in df.columns:
         if col == "y":
             continue
-        if df[col].dtype == object:
-            df[col].fillna(df[col].mode()[0] if not df[col].mode().empty else "unknown", inplace=True)
-            df[col] = LabelEncoder().fit_transform(df[col].astype(str))
+        if pd.api.types.is_numeric_dtype(df[col]):
+            df[col] = df[col].fillna(df[col].median())
         else:
-            df[col].fillna(df[col].median(), inplace=True)
+            df[col] = df[col].fillna(df[col].mode()[0] if not df[col].mode().empty else "unknown")
+            df[col] = LabelEncoder().fit_transform(df[col].astype(str))
     return df
 
 
